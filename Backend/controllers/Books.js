@@ -94,17 +94,16 @@ exports.postRating = function (req, res, next) {
   };
   Book.findOne({ _id: req.params.id })
     .then((book) => {
-      const totalRating = book.rating.length;
       book.ratings.push(rating);
-      const sumTotalRating = book.rating.reduce(
-        (accumulateur, valeurCourante) => accumulateur + valeurCourante.grade,
-        valeurInitiale
+      const totalRating = book.ratings.length;
+      const sumTotalRating = book.ratings.reduce(
+        (accumulateur, valeurCourante) => accumulateur + valeurCourante.grade, 0,
       );
-      const
+      const newAverageRating = sumTotalRating / totalRating;
       console.log(newAverageRating);
-      // book.save()
-      // .then(() => res.status(201).json({ message: "Note enregistré !" }))
-      // .catch((error) => res.status(400).json({ error: error }));
+      book.save()
+      .then(() => res.status(201).json({ message: "Note enregistré !" }))
+      .catch((error) => res.status(400).json({ error: error }));
     })
     .catch((error) => res.status(401).json({ error }));
 };
