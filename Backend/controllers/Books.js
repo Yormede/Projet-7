@@ -88,6 +88,7 @@ exports.deleteOneBook = function (req, res, next) {
 };
 
 exports.postRating = function (req, res, next) {
+  console.log(req.params.id);
   const rating = {
     userId: req.body.userId,
     grade: req.body.rating,
@@ -99,10 +100,11 @@ exports.postRating = function (req, res, next) {
       const sumTotalRating = book.ratings.reduce(
         (accumulateur, valeurCourante) => accumulateur + valeurCourante.grade, 0,
       );
-      const newAverageRating = sumTotalRating / totalRating;
-      console.log(newAverageRating);
-      book.save()
-      .then(() => res.status(201).json({ message: "Note enregistré !" }))
+      book.averageRating = sumTotalRating / totalRating
+      return book.save()
+      .then(() => {
+        res.status(201).json({ message: "Note enregistré !" })
+      })
       .catch((error) => res.status(400).json({ error: error }));
     })
     .catch((error) => res.status(401).json({ error }));
